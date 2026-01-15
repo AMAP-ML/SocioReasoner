@@ -1,4 +1,4 @@
-# SocioSeg
+# SocioReasoner
 [![arXiv](https://img.shields.io/badge/arXiv-2507.16251-b31b1b.svg)]()
 
 Official implementation of Urban Socio-Semantic Segmentation with Vision-Language Reasoning.
@@ -25,12 +25,15 @@ pip install 'transformer-engine[pytorch]==2.2.0' deepspeed==0.16.4 vllm==0.8.4 -
 pip install -e .
 ```
 
-## 2. Training, Evaluation and Visualization
+## 2. Training
 
 Please download the dataset and change the `actor_train.data_args.file_name` and `validation.data_args.file_name` in [examples/train/rlvr_megatron.yaml](examples/train/rlvr_megatron.yaml)
 ```bash
 sh examples/train/train.sh
 ```
+The trained model will be saved in `./output/train/checkpoint/`
+
+## 3. Evaluation and Visualization
 
 Please download the dataset & pretrained model(or the model trained by yourself), and change the `actor_train.data_args.file_name` and `pretrain` in [examples/infer/rlvr_megatron.yaml](examples/infer/rlvr_megatron.yaml)
 ```bash
