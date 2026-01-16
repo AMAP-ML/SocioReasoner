@@ -1,5 +1,5 @@
 # SocioReasoner
-[![arXiv](https://img.shields.io/badge/arXiv-2507.16251-b31b1b.svg)]()
+[![arXiv](https://img.shields.io/badge/arXiv-2601.10477-b31b1b.svg)](https://arxiv.org/abs/2601.10477)
 
 Official implementation of Urban Socio-Semantic Segmentation with Vision-Language Reasoning.
 
@@ -42,6 +42,16 @@ sh examples/infer/infer.sh
 The evaluation and visualization results will be saved in `./output/infer/result/`
 
 ![Results](./assets/results.jpg)
+
+## Citation
+```bibtex
+@article{wang2026socioreasoner,
+  title={Urban Socio-Semantic Segmentation with Vision-Language Reasoning}, 
+  author={Yu Wang and Yi Wang and Rui Dai and Yujie Wang and Kaikui Liu and Xiangxiang Chu and Yansheng Li},
+  journal={arXiv preprint arXiv:2601.10477},
+  year={2026}
+}
+```
 
 ## Acknowledgements
 We thank the authors of [ROLL](https://github.com/alibaba/ROLL) and [SegZero](https://github.com/JIA-Lab-research/Seg-Zero).
