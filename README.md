@@ -41,7 +41,7 @@ sh examples/infer/infer.sh
 ```
 The evaluation and visualization results will be saved in `./output/infer/result/`
 
-![Results](./assets/results.jpg)
+<img src="./assets/results.jpg" width=90% height=90% center>
 
 ## Citation
 ```bibtex
