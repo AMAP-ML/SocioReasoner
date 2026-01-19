@@ -7,9 +7,6 @@ Official implementation of Urban Socio-Semantic Segmentation with Vision-Languag
 
 **Abstract:** This paper introduces the Urban Socio-Semantic Segmentation dataset named SocioSeg, a new resource comprising satellite imagery, digital maps, and pixel-level labels of social semantic entities organized in a hierarchical structure. Additionally, we propose a novel vision-language reasoning framework called SocioReasoner that simulates the human process of identifying and annotating social semantic entities via cross-modal recognition and multi-stage reasoning. We employ reinforcement learning to optimize this non-differentiable process and elicit the reasoning capabilities of the vision-language model. Experiments demonstrate our approach's significant gains over state-of-the-art models and strong zero-shot generalization.
 
-- [x] Code: Available in this repository.
-- [ ] Dataset and Model: Undergoing review (Link coming soon).
-
 
 ## 1. Installation
 - OS: Linux distribution support for CUDA
@@ -25,20 +22,30 @@ pip install 'transformer-engine[pytorch]==2.2.0' deepspeed==0.16.4 vllm==0.8.4 -
 pip install -e .
 ```
 
-## 2. Training
+## 2. Dataset and Pretrained Model
+Dataset: We provide the dataset in Huggingface: [SocioSeg](https://huggingface.co/datasets/vvangfaye/SocioSeg). We also provide raw dataset files from [Google Drive](https://drive.google.com/drive/folders/1j3Y6v1k1f1b3g7JH1F2KX13J3J3J3J3?usp=sharing).
 
-Please download the dataset and change the `actor_train.data_args.file_name` and `validation.data_args.file_name` in [examples/train/rlvr_megatron.yaml](examples/train/rlvr_megatron.yaml)
+
+Pretrained Model: We provide the pretrained SocioReasoner-3B model on Huggingface: [SocioReasoner-3B](https://huggingface.co/vvangfaye/SocioReasoner-3B).
+
+## 3. Training
+
 ```bash
+# default using the hugginface dataset
 sh examples/train/train.sh
 ```
+If you want to use the raw dataset files, please change the `actor_train.data_args.file_name` and `validation.data_args.file_name` in [examples/train/rlvr_megatron.yaml](examples/train/rlvr_megatron.yaml) to your local dataset path.
+
 The trained model will be saved in `./output/train/checkpoint/`
 
-## 3. Evaluation and Visualization
+## 4. Evaluation and Visualization
 
-Please download the dataset & pretrained model(or the model trained by yourself), and change the `actor_train.data_args.file_name` and `pretrain` in [examples/infer/rlvr_megatron.yaml](examples/infer/rlvr_megatron.yaml)
 ```bash
+# default using the hugginface dataset and model
 sh examples/infer/infer.sh
 ```
+If you want to use the raw dataset files or the model trained by yourself, please change the `actor_train.data_args.file_name` and `pretrain` in [examples/infer/rlvr_megatron.yaml](examples/infer/rlvr_megatron.yaml)
+
 The evaluation and visualization results will be saved in `./output/infer/result/`
 
 <img src="./assets/results.jpg" width=90% height=90% center>

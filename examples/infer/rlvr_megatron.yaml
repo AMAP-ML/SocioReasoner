@@ -14,7 +14,8 @@ seed: 42
 logging_dir: ./output/infer/logs
 output_dir: ./output/infer
 
-pretrain: path/to/pretrain
+pretrain: vvangfaye/SocioReasoner-3B
+# pretrain: path/to/pretrain
 
 checkpoint_config:
   type: file_system

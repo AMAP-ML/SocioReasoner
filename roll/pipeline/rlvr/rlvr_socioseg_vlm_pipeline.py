@@ -285,7 +285,7 @@ def get_dataset(data_args, encode_function, processor, features=None, get_eval=F
 
     # if load from huggingface
     split = "validation" if get_eval else "train"
-    dataset = load_dataset("vvangfaye/SocioSeg", split=split)
+    dataset = load_dataset("vvangfaye/SocioSeg")[split]
 
     remove_columns = list(dataset.features.keys() - features.keys())
 
@@ -329,7 +329,7 @@ def get_extra_data_provider(model_name_or_path: str, processor=None):
         import types
 
         from transformers import BatchFeature
-        from transformers.models.qwen2_vl import Qwen2VLForConditionalGeneration
+        from transformers.models.qwen2_vl import Qwen2VLForConditionalGeneration, Qwen2VLModel
 
         dummy_self = BatchFeature(
             {
@@ -343,7 +343,10 @@ def get_extra_data_provider(model_name_or_path: str, processor=None):
                 )
             }
         )
-        get_rope_index = types.MethodType(Qwen2VLForConditionalGeneration.get_rope_index, dummy_self)
+        if hasattr(Qwen2VLForConditionalGeneration, "get_rope_index"):
+            get_rope_index = types.MethodType(Qwen2VLForConditionalGeneration.get_rope_index, dummy_self)
+        else:
+            get_rope_index = types.MethodType(Qwen2VLModel.get_rope_index, dummy_self)
 
         def extra_data_provider(
             input_ids: torch.LongTensor,
