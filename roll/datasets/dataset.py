@@ -62,7 +62,6 @@ class SocioSegDataset(datasets.GeneratorBasedBuilder):
     """
 
     def _info(self):
-        # 在这里定义数据集的特征，即每一条数据的结构
         return datasets.DatasetInfo(
             description="SocioSeg Dataset",
             features=datasets.Features({
@@ -70,10 +69,7 @@ class SocioSegDataset(datasets.GeneratorBasedBuilder):
                 "problem": datasets.Value("string"),
                 "map_image": datasets.Image(),
                 "sat_image": datasets.Image(),
-                "stage2_seg_image": datasets.Image(),
                 "mask_label": datasets.Image(),
-                "segzero_label": datasets.Value("string"),
-                "stage1_answer": datasets.Value("string"),
             }),
         )
 
@@ -95,17 +91,13 @@ class SocioSegDataset(datasets.GeneratorBasedBuilder):
     def _generate_examples(self, data_dir):
         example_dirs = sorted([d for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))])
 
-        for idx, example_id in enumerate(example_dirs):
+        for example_id in example_dirs:
             example_path = os.path.join(data_dir, example_id)
 
             json_path = os.path.join(example_path, "question.json")
             map_path = os.path.join(example_path, "map.png")
             sat_path = os.path.join(example_path, "sat.png")
             mask_path = os.path.join(example_path, "mask.png")
-            segzero_path = os.path.join(example_path, "two_point.json")
-
-            #
-            stage1_answer_path = os.path.join(example_path, "stage1_answer.json")
 
             if not all(os.path.exists(p) for p in [json_path, map_path, sat_path, mask_path]):
                 print(f"warning {example_path} is not complete")
@@ -119,28 +111,10 @@ class SocioSegDataset(datasets.GeneratorBasedBuilder):
                 print(f"error: {e}")
                 continue
 
-            if os.path.exists(segzero_path):
-                with open(segzero_path, "r", encoding="utf-8") as f:
-                    segzero_data = json.load(f)
-            else:
-                segzero_data = None
-
-            if os.path.exists(stage1_answer_path):
-                with open(stage1_answer_path, "r", encoding="utf-8") as f:
-                    stage1_answer_data = json.load(f)
-                    stage1_answer_text = stage1_answer_data.get("stage1_answer", "")
-                stage2_seg_path = os.path.join(example_path.replace("stage2_", ""), "sat.png")
-            else:
-                stage1_answer_text = None
-                stage2_seg_path = None
-
             yield {
                 "id": example_id,
                 "problem": problem_text,
                 "map_image": map_path,
                 "sat_image": sat_path,
                 "mask_label": mask_path,
-                "segzero_label": segzero_data,
-                "stage1_answer": stage1_answer_text,
-                "stage2_seg_image": stage2_seg_path
             }

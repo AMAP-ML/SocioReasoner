@@ -354,13 +354,21 @@ def get_dataset(data_args, encode_function, processor, features=None, get_eval=F
     data_files = []
     dataset_dir = getattr(data_args, "dataset_dir", ".")
     local_path: str = os.path.join(dataset_dir, data_name)
-    dataset_builder = SocioSegDataset()
-    test_path = os.path.join(local_path, "test")
-    dataset = datasets.Dataset.from_generator(
-        dataset_builder._generate_examples,
-        gen_kwargs={"data_dir": test_path},
-        features=dataset_builder.info.features
-    )
+
+    # if load from local
+    # dataset_builder = SocioSegDataset()
+    # test_path = os.path.join(local_path, "test")
+    # dataset = datasets.Dataset.from_generator(
+    #     dataset_builder._generate_examples,
+    #     gen_kwargs={"data_dir": test_path},
+    #     features=dataset_builder.info.features
+    # )
+
+    # if load from huggingface
+    split = "test"
+    dataset = load_dataset("vvangfaye/SocioSeg", split=split)
+
+
     remove_columns = list(dataset.features.keys() - features.keys())
 
     id_key = getattr(data_args, "id") if getattr(data_args, "id", None) else "id"

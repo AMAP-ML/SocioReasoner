@@ -227,8 +227,6 @@ def encode_function(data_i, processor, id_key, prompt_key, label_key, image_map_
 
     bbox_gt = get_bboxes(label_out)
 
-    point_gt = data_i.get("segzero_label", [None] * n)
-
     map_text_list = []
     for idx, instruct in enumerate(data_i[prompt_key]):
         text = format_prompt_1(instruct, processor, use_image=image_flag[idx], prompt_image_token=None)
@@ -240,7 +238,6 @@ def encode_function(data_i, processor, id_key, prompt_key, label_key, image_map_
         "question": question_list,
         "gt_mask": label_out,       # [n]
         "gt_bbox": bbox_gt,             # [n]
-        "gt_point": point_gt,             # [n]
         "gt_object": object_gt,          # [n]
         "image_sat": sat_image_list,             # [n]
         "image_map": map_image_list,             # [n]
@@ -249,6 +246,7 @@ def encode_function(data_i, processor, id_key, prompt_key, label_key, image_map_
         "image_flag": image_flag,        # [n]
         "tag": [""] * n                  # [n]
     }
+
     return encodings
 
 
@@ -274,13 +272,21 @@ def get_dataset(data_args, encode_function, processor, features=None, get_eval=F
     data_files = []
     dataset_dir = getattr(data_args, "dataset_dir", ".")
     local_path: str = os.path.join(dataset_dir, data_name)
-    dataset_builder = SocioSegDataset()
-    train_path = os.path.join(local_path, "val" if get_eval else "train")
-    dataset = datasets.Dataset.from_generator(
-        dataset_builder._generate_examples,
-        gen_kwargs={"data_dir": train_path},
-        features=dataset_builder.info.features
-    )
+
+    # if load from local
+
+    # dataset_builder = SocioSegDataset()
+    # train_path = os.path.join(local_path, "val" if get_eval else "train")
+    # dataset = datasets.Dataset.from_generator(
+    #     dataset_builder._generate_examples,
+    #     gen_kwargs={"data_dir": train_path},
+    #     features=dataset_builder.info.features
+    # )
+
+    # if load from huggingface
+    split = "validation" if get_eval else "train"
+    dataset = load_dataset("vvangfaye/SocioSeg", split=split)
+
     remove_columns = list(dataset.features.keys() - features.keys())
 
     id_key = getattr(data_args, "id") if getattr(data_args, "id", None) else "id"
@@ -463,7 +469,6 @@ class SocioSegPipeline(BasePipeline):
                 "seg_image": datasets.Image(decode=True),  # sat_image segmentation
                 "gt_object": datasets.Value("int32"),  # number of objects in ground truth
                 "gt_bbox": datasets.Value("string"),  # {"bbox_2d": [x1, y1, w1, h1]},
-                "gt_point": datasets.Value("string"),  # {"point_2d": [x1, y1]}
                 "image_sat": datasets.Sequence(datasets.Image(decode=True)),
                 "image_map": datasets.Sequence(datasets.Image(decode=True)),
                 "image": datasets.Sequence(datasets.Image(decode=True)),  # [sat_image, map_image]
@@ -494,7 +499,6 @@ class SocioSegPipeline(BasePipeline):
             padding="max_length",
             gt_object_key="gt_object",
             gt_bbox_key="gt_bbox",
-            gt_point_key="gt_point",
         )
         self.dataloader = get_dataloader(dataset, self.pipeline_config.rollout_batch_size, data_collator)
         
