@@ -12,11 +12,11 @@ Official implementation of Urban Socio-Semantic Segmentation with Vision-Languag
 You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing).
 
 <div align="center">
-  <div style="display:inline-block; text-align:center; width:45%;">
+  <div style="display:inline-block; text-align:center; width:40%;">
     <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/Wangjing%20SOHO.gif" width="100%" />
     <div>Wangjing SOHO</div>
   </div>
-  <div style="display:inline-block; text-align:center; width:45%;">
+  <div style="display:inline-block; text-align:center; width:40%;">
     <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/Wuhan%20University.gif" width="100%" />
     <div>Wuhan University</div>
   </div>
