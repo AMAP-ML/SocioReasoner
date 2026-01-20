@@ -1,12 +1,12 @@
 # SocioReasoner
-[![arXiv](https://img.shields.io/badge/arXiv-2601.10477-b31b1b.svg)](https://arxiv.org/abs/2601.10477)
+[![arXiv](https://img.shields.io/badge/arXiv-2601.10477-b31b1b.svg)](https://arxiv.org/abs/2601.10477) 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing)
 
 Official implementation of Urban Socio-Semantic Segmentation with Vision-Language Reasoning.
 
 <img src="./assets/tasks.jpg" width=80% height=80% center>
 
 **Abstract:** This paper introduces the Urban Socio-Semantic Segmentation dataset named SocioSeg, a new resource comprising satellite imagery, digital maps, and pixel-level labels of social semantic entities organized in a hierarchical structure. Additionally, we propose a novel vision-language reasoning framework called SocioReasoner that simulates the human process of identifying and annotating social semantic entities via cross-modal recognition and multi-stage reasoning. We employ reinforcement learning to optimize this non-differentiable process and elicit the reasoning capabilities of the vision-language model. Experiments demonstrate our approach's significant gains over state-of-the-art models and strong zero-shot generalization.
-
 
 ## 1. Installation
 - OS: Linux distribution support for CUDA
@@ -23,10 +23,10 @@ pip install -e .
 ```
 
 ## 2. Dataset and Pretrained Model
-Dataset: We provide the dataset in Huggingface: [SocioSeg](https://huggingface.co/datasets/vvangfaye/SocioSeg). We also provide raw dataset files from [Google Drive](https://drive.google.com/drive/folders/1j3Y6v1k1f1b3g7JH1F2KX13J3J3J3J3?usp=sharing).
+Huggingface dataset: [SocioSeg](https://huggingface.co/datasets/vvangfaye/SocioSeg).  Raw dataset files: [Google Drive](https://drive.google.com/file/d/1IaO_NIasH0v1uad_hc8-z_gWiFIy1dSP/view?usp=sharing).
 
 
-Pretrained Model: We provide the pretrained SocioReasoner-3B model on Huggingface: [SocioReasoner-3B](https://huggingface.co/vvangfaye/SocioReasoner-3B).
+Pretrained Model: Huggingface model: [SocioReasoner-3B](https://huggingface.co/vvangfaye/SocioReasoner-3B).
 
 ## 3. Training
 
