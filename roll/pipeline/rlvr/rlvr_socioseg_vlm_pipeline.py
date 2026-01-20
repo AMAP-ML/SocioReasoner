@@ -284,7 +284,7 @@ def get_dataset(data_args, encode_function, processor, features=None, get_eval=F
     # )
 
     # if load from huggingface
-    split = "validation" if get_eval else "train"
+    split = "val" if get_eval else "train"
     dataset = load_dataset("vvangfaye/SocioSeg")[split]
 
     remove_columns = list(dataset.features.keys() - features.keys())
@@ -402,7 +402,7 @@ def render_image(
         else:
             print("warning: images is empty")
     except Exception as e:
-        print(f"error: {e}")
+        # print(f"error: {e}")
         processed_mask_overlay = None
 
     bboxes = []
@@ -415,7 +415,7 @@ def render_image(
                 else:
                     print(f"warning: item is not dict or bbox_2d is not in item")
     except (json.JSONDecodeError, TypeError) as e:
-        print(f"error: {e}")
+        # print(f"error: {e}")
         bboxes = []
 
 
@@ -440,7 +440,8 @@ def render_image(
                 else:
                      current_rendered_image = Image.alpha_composite(current_rendered_image, processed_mask_overlay)
             except ValueError as e:
-                print(f"error: {e}")
+                # print(f"error: {e}")
+                pass
 
         final_image = current_rendered_image.convert("RGB")
         rendered_images.append(final_image)

@@ -285,8 +285,6 @@ class SocioSegRuleRewardWorker(Worker):
         gt_mask_list = data.non_tensor_batch["gt_mask"]
         gt_bbox_list = data.non_tensor_batch["gt_bbox"]
         bbox_text_list = data.non_tensor_batch["bboxs_text"]
-        gt_point_list = data.non_tensor_batch["gt_point"]
-
 
         map_format_rewards = []
         map_length_rewards = []
@@ -316,7 +314,7 @@ class SocioSegRuleRewardWorker(Worker):
         sat_accuracy_rewards = []
         sat_seg_iou_accuracies = []
 
-        for response, bbox_text, pred_mask, gt_mask, gt_point in zip(sat_response_text_list, bbox_text_list, sat_pred_mask_list, gt_mask_list, gt_point_list):
+        for response, bbox_text, pred_mask, gt_mask in zip(sat_response_text_list, bbox_text_list, sat_pred_mask_list, gt_mask_list):
             response = response.replace("<|endoftext|>", "").replace("<|im_end|>", "").replace("<pad>", "")
             
             format_reward = _multi_s2_format_reward(response, bbox_text)

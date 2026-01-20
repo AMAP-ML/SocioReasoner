@@ -30,7 +30,7 @@ logging_steps: 1
 eval_steps: 20
 resume_from_checkpoint: false
 
-rollout_batch_size: 200
+rollout_batch_size: 250
 num_return_sequences_in_group: 1
 is_num_return_sequences_expand: true
 prompt_length: 4096

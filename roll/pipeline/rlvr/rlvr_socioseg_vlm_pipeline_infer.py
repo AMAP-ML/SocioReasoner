@@ -42,7 +42,7 @@ from roll.pipeline.multi_utils import parse_points_text_from_content
 
 logger = get_logger()
 
-def compute_iou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
+def compute_giou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
     """Computes Intersection over Union (IoU) for binary masks."""
     # Ensure masks are boolean
     pred_mask_bool = pred_mask > 0
@@ -56,35 +56,6 @@ def compute_iou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
         return 1.0
         
     return intersection / union
-
-def compute_giou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
-    """Computes Generalized IoU (GIoU) for binary masks."""
-    # Ensure masks are boolean
-    pred_mask_bool = pred_mask > 0
-    gt_mask_bool = gt_mask > 0
-
-    intersection = np.logical_and(pred_mask_bool, gt_mask_bool).sum()
-    union = np.logical_or(pred_mask_bool, gt_mask_bool).sum()
-    
-    if union == 0:
-        return 1.0
-
-    iou = intersection / union
-    
-    # Find the smallest enclosing box C
-    all_points = np.argwhere(np.logical_or(pred_mask_bool, gt_mask_bool))
-    if all_points.shape[0] == 0:
-        return 1.0
-        
-    y_min, x_min = all_points.min(axis=0)
-    y_max, x_max = all_points.max(axis=0)
-    
-    enclosing_area = (x_max - x_min + 1) * (y_max - y_min + 1)
-    
-    if enclosing_area == 0:
-        return iou # Should not happen if union > 0
-        
-    return iou - (enclosing_area - union) / enclosing_area
 
 def compute_ciou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
     """Computes Complete IoU (CIoU) based on bounding boxes of masks."""
@@ -481,7 +452,7 @@ def render_image(
             print("warning: images is empty")
 
     except Exception as e:
-        print(f"error: {e}")
+        # print(f"error: {e}")
         processed_mask_overlay = None
 
     bboxes = []
@@ -494,7 +465,7 @@ def render_image(
                 else:
                     print(f"warning: item is not a dict or bbox_2d is not in item")
     except (json.JSONDecodeError, TypeError) as e:
-        print(f"error: {e}")
+        # print(f"error: {e}")
         bboxes = []
 
     for i, image in enumerate(images):
@@ -518,7 +489,8 @@ def render_image(
                 else:
                      current_rendered_image = Image.alpha_composite(current_rendered_image, processed_mask_overlay)
             except ValueError as e:
-                print(f"error: {e}")
+                # print(f"error: {e}")
+                pass
 
         final_image = current_rendered_image.convert("RGB")
         rendered_images.append(final_image)
@@ -553,7 +525,8 @@ def draw_visual_prompt(image: Image.Image, mask: Union[np.ndarray, Image.Image],
         rendered_image = Image.alpha_composite(rendered_image, mask_overlay)
 
     except Exception as e:
-        print(f"error: {e}")
+        # print(f"error: {e}")
+        pass
 
     draw = ImageDraw.Draw(rendered_image)
 
@@ -698,7 +671,6 @@ class SocioSegInferPipeline(BasePipeline):
         seg_infer_timer = _Timer(window_size=5)
         actor_train_timer = _Timer(window_size=5)
 
-        all_iou_acc = []
         all_ciou_acc = []
         all_giou_acc = []
         for batch_dict in tqdm(self.dataloader):
@@ -942,16 +914,12 @@ class SocioSegInferPipeline(BasePipeline):
                 batch.non_tensor_batch["sat_mask"] = batch.non_tensor_batch.pop("mask")
                 batch.non_tensor_batch["sat_visual_prompt"] = batch.non_tensor_batch.pop("visual_prompt")
 
-                iou_list, ciou_list, giou_list = [], [], []
+                ciou_list, giou_list = [], []
                 map_response_list = self.tokenizer.batch_decode(batch.batch["map_responses"], skip_special_tokens=False)
                 sat_response_list = self.tokenizer.batch_decode(batch.batch["responses"], skip_special_tokens=False)
                 for i in range(len(batch)):
                     gt_mask = np.array(batch[i].non_tensor_batch["gt_mask"].convert("L"))
 
-                    iou = compute_iou(
-                        batch[i].non_tensor_batch["sat_mask"],
-                        gt_mask
-                    )
                     ciou = compute_ciou(
                         batch[i].non_tensor_batch["sat_mask"],
                         gt_mask
@@ -961,7 +929,6 @@ class SocioSegInferPipeline(BasePipeline):
                         gt_mask
                     )
 
-                    iou_list.append(iou)
                     ciou_list.append(ciou)
                     giou_list.append(giou)
 
@@ -976,10 +943,10 @@ class SocioSegInferPipeline(BasePipeline):
                     mask_s1 = batch[i].non_tensor_batch["map_mask"]
                     mask_s2 = batch[i].non_tensor_batch["sat_mask"]
                     save_id = batch[i].non_tensor_batch["id"]
-                    save_dir1 = f".output/infer/result/stage1/"
-                    save_dir2 = f".output/infer/result/stage2/"
-                    save_dir3 = f".output/infer/result/render1/"
-                    save_dir4 = f".output/infer/result/render2/"
+                    save_dir1 = f"./output/infer/result/stage1/"
+                    save_dir2 = f"./output/infer/result/stage2/"
+                    save_dir3 = f"./output/infer/result/render1/"
+                    save_dir4 = f"./output/infer/result/render2/"
                     os.makedirs(save_dir1, exist_ok=True)
                     os.makedirs(save_dir2, exist_ok=True)
                     os.makedirs(save_dir3, exist_ok=True)
@@ -998,14 +965,13 @@ class SocioSegInferPipeline(BasePipeline):
                     with open(f"{save_dir2}/{save_id}.txt", "w") as f:
                         f.write(sat_response_list[i])
 
-                print(f"iou_acc: {np.mean(iou_list)}, ciou_acc: {np.mean(ciou_list)}, giou_acc: {np.mean(giou_list)}")
+                print(f"ciou_acc: {np.mean(ciou_list)}, giou_acc: {np.mean(giou_list)}")
 
-                all_iou_acc.extend(iou_list)
                 all_ciou_acc.extend(ciou_list)
                 all_giou_acc.extend(giou_list)
-        print(f"iou_acc: {np.mean(all_iou_acc)}, ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
-        with open("iou_acc.txt", "w") as f:
-            f.write(f"iou_acc: {np.mean(all_iou_acc)}, ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
+        print(f"ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
+        with open("./output/infer/result/iou_acc.txt", "w") as f:
+            f.write(f"ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
 
     
 
