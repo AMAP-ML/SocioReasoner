@@ -14,13 +14,14 @@ You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF
 <div align="center">
     <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/demo.gif" width="100%" />
 </div>
-
-<table align="center">
-<tr>
-<td style="text-align:center;">Wangjing SOHO</td>
-<td style="text-align:center;">Wuhan University</td>
-</tr>
-</table>
+<div align="center">
+  <div style="display:inline-block; width:45%; text-align:center;">
+    Wangjing SOHO
+  </div>
+  <div style="display:inline-block; width:45%; text-align:center;">
+    Wuhan University
+  </div>
+</div>
 
 
 ## 1. Installation
