@@ -8,6 +8,22 @@ Official implementation of Urban Socio-Semantic Segmentation with Vision-Languag
 
 **Abstract:** This paper introduces the Urban Socio-Semantic Segmentation dataset named SocioSeg, a new resource comprising satellite imagery, digital maps, and pixel-level labels of social semantic entities organized in a hierarchical structure. Additionally, we propose a novel vision-language reasoning framework called SocioReasoner that simulates the human process of identifying and annotating social semantic entities via cross-modal recognition and multi-stage reasoning. We employ reinforcement learning to optimize this non-differentiable process and elicit the reasoning capabilities of the vision-language model. Experiments demonstrate our approach's significant gains over state-of-the-art models and strong zero-shot generalization.
 
+## 0. Demo
+You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing).
+
+<div align="center">
+  <div style="display:inline-block; text-align:center; width:48%;">
+    <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/Wangjing%20SOHO.gif" width="100%" />
+    <div>Wangjing SOHO</div>
+  </div>
+  <div style="display:inline-block; text-align:center; width:48%;">
+    <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/Wuhan%20University.gif" width="100%" />
+    <div>Wuhan University</div>
+  </div>
+</div>
+
+
+
 ## 1. Installation
 - OS: Linux distribution support for CUDA
 - Hardware: At least 4x NVIDIA H20 (or A100 80GB) GPUs

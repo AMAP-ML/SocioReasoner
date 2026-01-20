@@ -57,52 +57,6 @@ def compute_giou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
         
     return intersection / union
 
-def compute_ciou(pred_mask: np.ndarray, gt_mask: np.ndarray) -> float:
-    """Computes Complete IoU (CIoU) based on bounding boxes of masks."""
-    # Convert boolean or 0/255 masks to uint8 0/1 for findContours
-    pred_mask_u8 = (pred_mask > 0).astype(np.uint8)
-    gt_mask_u8 = (gt_mask > 0).astype(np.uint8)
-
-    pred_contours, _ = cv2.findContours(pred_mask_u8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    pred_box = cv2.boundingRect(np.concatenate(pred_contours)) if pred_contours else None
-
-    gt_contours, _ = cv2.findContours(gt_mask_u8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    gt_box = cv2.boundingRect(np.concatenate(gt_contours)) if gt_contours else None
-
-    if pred_box is None and gt_box is None: return 1.0
-    if pred_box is None or gt_box is None: return 0.0
-
-    px, py, pw, ph = pred_box
-    gx, gy, gw, gh = gt_box
-
-    # Bounding Box IoU
-    ix1, iy1 = max(px, gx), max(py, gy)
-    ix2, iy2 = min(px + pw, gx + gw), min(py + ph, gy + gh)
-    inter_area = max(0, ix2 - ix1) * max(0, iy2 - iy1)
-    union_area = (pw * ph) + (gw * gh) - inter_area
-    if union_area == 0: return 1.0 if inter_area > 0 else 0.0
-    iou = inter_area / union_area
-
-    # Enclosing Box C
-    cx1, cy1 = min(px, gx), min(py, gy)
-    cx2, cy2 = max(px + pw, gx + gw), max(py + ph, gy + gh)
-    
-    # Center distance penalty
-    pcx, pcy = px + pw / 2, py + ph / 2
-    gcx, gcy = gx + gw / 2, gy + gh / 2
-    center_dist_sq = (pcx - gcx)**2 + (pcy - gcy)**2
-    c_diag_sq = (cx2 - cx1)**2 + (cy2 - cy1)**2
-    if c_diag_sq == 0: return iou
-    
-    # Aspect ratio penalty
-    with warnings.catch_warnings(): # Suppress RuntimeWarning for division by zero
-        warnings.simplefilter("ignore")
-        v = (4 / (np.pi**2)) * ((np.arctan(gw / gh) - np.arctan(pw / ph))**2)
-    
-    alpha = v / ((1 - iou) + v + 1e-7)
-    
-    return iou - (center_dist_sq / c_diag_sq + alpha * v)
-
 
 def format_prompt_1(prompt, processor, use_image=True, prompt_image_token=None):
 
@@ -671,7 +625,6 @@ class SocioSegInferPipeline(BasePipeline):
         seg_infer_timer = _Timer(window_size=5)
         actor_train_timer = _Timer(window_size=5)
 
-        all_ciou_acc = []
         all_giou_acc = []
         for batch_dict in tqdm(self.dataloader):
             metrics = {}
@@ -914,22 +867,16 @@ class SocioSegInferPipeline(BasePipeline):
                 batch.non_tensor_batch["sat_mask"] = batch.non_tensor_batch.pop("mask")
                 batch.non_tensor_batch["sat_visual_prompt"] = batch.non_tensor_batch.pop("visual_prompt")
 
-                ciou_list, giou_list = [], []
+                giou_list = []
                 map_response_list = self.tokenizer.batch_decode(batch.batch["map_responses"], skip_special_tokens=False)
                 sat_response_list = self.tokenizer.batch_decode(batch.batch["responses"], skip_special_tokens=False)
                 for i in range(len(batch)):
                     gt_mask = np.array(batch[i].non_tensor_batch["gt_mask"].convert("L"))
 
-                    ciou = compute_ciou(
-                        batch[i].non_tensor_batch["sat_mask"],
-                        gt_mask
-                    )
                     giou = compute_giou(
                         batch[i].non_tensor_batch["sat_mask"],
                         gt_mask
                     )
-
-                    ciou_list.append(ciou)
                     giou_list.append(giou)
 
                     try:
@@ -965,14 +912,8 @@ class SocioSegInferPipeline(BasePipeline):
                     with open(f"{save_dir2}/{save_id}.txt", "w") as f:
                         f.write(sat_response_list[i])
 
-                print(f"ciou_acc: {np.mean(ciou_list)}, giou_acc: {np.mean(giou_list)}")
-
-                all_ciou_acc.extend(ciou_list)
+                print(f"giou_acc: {np.mean(giou_list)}")
                 all_giou_acc.extend(giou_list)
-        print(f"ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
+        print(f"giou_acc: {np.mean(all_giou_acc)}")
         with open("./output/infer/result/iou_acc.txt", "w") as f:
-            f.write(f"ciou_acc: {np.mean(all_ciou_acc)}, giou_acc: {np.mean(all_giou_acc)}")
-
-    
-
-    
+            f.write(f"giou_acc: {np.mean(all_giou_acc)}")
