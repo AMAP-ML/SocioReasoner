@@ -30,7 +30,6 @@ swanlab
 math-verify
 openai
 langdetect
-nltk>=3.8
 
 gym
 gymnasium[toy-text]
