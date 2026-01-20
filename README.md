@@ -14,7 +14,8 @@ You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF
 <div align="center">
     <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/demo.gif" width="100%" />
 </div>
-Left: Wangjing SOHO. Right: Wuhan University
+
+Left: `Wangjing SOHO`. Right: `Wuhan University`. 
 
 
 
