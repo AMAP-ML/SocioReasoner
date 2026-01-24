@@ -11,7 +11,9 @@ Official implementation of Urban Socio-Semantic Segmentation with Vision-Languag
 ## 0. Demo
 You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing).
 
-![demo](https://github.com/user-attachments/assets/94f77e25-595e-44d3-bbf1-d69730bdf7bb)
+<div align="center">
+    <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/demo.gif" width="100%" />
+</div>
 
 Left: `Wangjing SOHO`. Right: `Wuhan University`. 
 
