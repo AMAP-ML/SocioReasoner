@@ -2,7 +2,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2601.10477-b31b1b.svg)](https://arxiv.org/abs/2601.10477) 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing)
 
-Official implementation of Urban Socio-Semantic Segmentation with Vision-Language Reasoning.
+Official implementation of the ICLR 2026 paper "Urban Socio-Semantic Segmentation with Vision-Language Reasoning".
 
 <img src="./assets/tasks.jpg" width=80% height=80% center>
 
@@ -11,9 +11,10 @@ Official implementation of Urban Socio-Semantic Segmentation with Vision-Languag
 ## 0. Demo
 You can run it in [Google Colab](https://colab.research.google.com/drive/1RiWgtF4z7ARaB_VWrnzcXdV7Gw5T8OHT?usp=sharing).
 
-<div align="center">
+![demo](https://github.com/user-attachments/assets/94f77e25-595e-44d3-bbf1-d69730bdf7bb)
+<!-- <div align="center">
     <img src="https://image-1305984033.cos.ap-nanjing.myqcloud.com/blog/socioreasoner/demo.gif" width="100%" />
-</div>
+</div> -->
 
 Left: `Wangjing SOHO`. Right: `Wuhan University`. 
 
