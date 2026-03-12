@@ -320,7 +320,7 @@ def get_dataloader(dataset, batch_size, data_collator):
         dataset=dataset,
         batch_size=batch_size,
         shuffle=True,
-        drop_last=True,
+        drop_last=False,
         num_workers=4,  # larger shm for bigger num_workers
         collate_fn=data_collator,
     )
